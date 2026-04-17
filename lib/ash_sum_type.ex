@@ -321,8 +321,8 @@ defmodule AshSumType do
         ],
         allow_nil?: [
           type: :boolean,
-          default: true,
-          doc: "Whether the field can be nil."
+          default: false,
+          doc: "Whether the field can be nil. Defaults to false."
         ],
         description: [
           type: :string,

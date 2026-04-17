@@ -4,6 +4,8 @@
 
 It lets you declare tagged variants with optional carried fields, work with them in Elixir as atoms or tuples, and persist them through Ash as maps.
 
+> [!NOTE] Fields are not nilable by default
+
 ## Defining A Sum Type
 
 ```elixir
@@ -11,11 +13,11 @@ defmodule MyApp.Result do
   use AshSumType
 
   variant :ok do
-    field :value, :integer, allow_nil?: false
+    field :value, :integer
   end
 
   variant :error do
-    field :message, :string, allow_nil?: false
+    field :message, :string
   end
 end
 ```
@@ -166,6 +168,20 @@ iex> MyApp.Result.new(:ok, value: "nope")
 {:error, error}
 ```
 
+Fields also reject `nil` by default. If you want to allow `nil`, opt in explicitly:
+
+```elixir
+defmodule MyApp.MaybeLabel do
+  use AshSumType
+
+  variant :some do
+    field :value, :string, allow_nil?: true
+  end
+
+  variant :none
+end
+```
+
 Unknown variants, unknown carried fields, invalid field values, and wrong tuple arity are rejected.
 
 ## Nesting
@@ -177,7 +193,7 @@ defmodule MyApp.GameWinner do
   use AshSumType
 
   variant :player do
-    field :player, MyApp.Player, allow_nil?: false
+    field :player, MyApp.Player
   end
 
   variant :draw

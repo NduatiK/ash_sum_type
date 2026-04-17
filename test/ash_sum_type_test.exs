@@ -2,6 +2,7 @@ defmodule AshSumTypeTest do
   use ExUnit.Case, async: true
 
   alias AshSumTypeTest.Result
+  alias AshSumTypeTest.MaybeLabel
   alias AshSumTypeTest.TicTacToePlayer
   alias AshSumTypeTest.TicTacToeMark
   alias AshSumTypeTest.TicTacToeGameWinner
@@ -16,6 +17,14 @@ defmodule AshSumTypeTest do
   test "validates arguments using Ash types" do
     assert {:error, error} = Result.new(:ok, value: "nope")
     assert Exception.message(error) =~ "Invalid value provided"
+  end
+
+  test "carried fields reject nil by default and can opt in to nil" do
+    assert {:error, error} = Result.new(:ok, value: nil)
+    assert Exception.message(error) =~ "must not be nil"
+
+    assert MaybeLabel.new(:some, value: nil) == {:ok, {:some, nil}}
+    assert MaybeLabel.cast_input(%{__variant__: :some, value: nil}, []) == {:ok, {:some, nil}}
   end
 
   test "stores zero-field variants as bare atoms" do
