@@ -49,6 +49,16 @@ defmodule AshSumTypeTest do
     assert TicTacToeGameWinner.cast_input(:draw, []) == {:ok, :draw}
   end
 
+  test "supports prepare_change_array expected by Ash types" do
+    assert Result.prepare_change_array?()
+
+    assert Result.prepare_change_array([], [%{__variant__: :ok, value: 1}, {:error, "nope"}], []) ==
+             {:ok, [{:ok, 1}, {:error, "nope"}]}
+
+    assert Ash.Type.prepare_change({:array, Result}, [], [%{__variant__: :ok, value: 1}], []) ==
+             {:ok, [{:ok, 1}]}
+  end
+
   test "stores values as maps in the database representation" do
     assert {:ok, dumped} = Result.dump_to_native({:ok, 1}, [])
     assert dumped == %{__variant__: :ok, value: 1}
@@ -66,6 +76,13 @@ defmodule AshSumTypeTest do
 
     assert {:error, [field: :ok, message: message, value: []]} = Result.cast_input({:ok}, [])
     assert message =~ "expected 1 argument"
+  end
+
+  test "prepare_change_array propagates item errors" do
+    assert {:error, [[value: "nope", field: :value, message: message]]} =
+             Result.prepare_change_array([], [%{__variant__: :ok, value: "nope"}], [])
+
+    assert message =~ "is invalid"
   end
 
   test "works as an Ash resource attribute type with default values" do

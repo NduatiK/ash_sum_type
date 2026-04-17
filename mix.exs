@@ -31,6 +31,7 @@ defmodule AshSumType.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:usage_rules, "~> 1.0", only: [:dev]},
       {:sourceror, "~> 1.8", only: [:dev, :test]},
       {:ash, "~> 3.0"}
     ]
