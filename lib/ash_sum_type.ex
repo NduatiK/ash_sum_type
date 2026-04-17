@@ -493,15 +493,34 @@ defmodule AshSumType do
   end
 
   @doc false
-  def handle_before_compile(_opts) do
+  def handle_opts(_opts) do
     quote do
+    end
+  end
+
+  @doc false
+  def handle_before_compile(opts) do
+    shorthand_variants =
+      opts
+      |> Keyword.get(:variants, [])
+      |> Enum.map(&%Variant{name: &1, fields: []})
+
+    quote bind_quoted: [shorthand_variants: Macro.escape(shorthand_variants)] do
       variants =
-        Spark.Dsl.Extension.get_entities(__MODULE__, [:sum_type])
+        (shorthand_variants ++ Spark.Dsl.Extension.get_entities(__MODULE__, [:sum_type]))
         |> AshSumType.Dsl.normalize_variants!()
 
       Code.eval_quoted(AshSumType.__define_sum_type__(variants), [], __ENV__)
     end
   end
 
-  use Spark.Dsl, default_extensions: [extensions: [Dsl]]
+  use Spark.Dsl,
+    default_extensions: [extensions: [Dsl]],
+    opt_schema: [
+      variants: [
+        type: {:list, :atom},
+        default: [],
+        doc: "Shorthand nullary variants to define when using `AshSumType`."
+      ]
+    ]
 end

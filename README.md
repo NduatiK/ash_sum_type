@@ -20,6 +20,14 @@ defmodule MyApp.Result do
 end
 ```
 
+For nullary variants, you can also use a shorthand:
+
+```elixir
+defmodule MyApp.Player do
+  use AshSumType, variants: [:x, :o]
+end
+```
+
 This defines an Ash type with two variants:
 
 - `:ok`, which carries an integer
@@ -190,4 +198,3 @@ This allows values like:
 - `variants/0` returns the declared variants
 - `variant_names/0` returns declared variant names
 - `fields/1` returns the fields for a variant
-

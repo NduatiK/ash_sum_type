@@ -3,6 +3,7 @@ defmodule AshSumTypeTest do
 
   alias AshSumTypeTest.Result
   alias AshSumTypeTest.TicTacToePlayer
+  alias AshSumTypeTest.TicTacToeMark
   alias AshSumTypeTest.TicTacToeGameWinner
   alias AshSumTypeTest.TestGamesDomain
 
@@ -25,6 +26,13 @@ defmodule AshSumTypeTest do
              TicTacToePlayer.cast_input({:o}, [])
 
     assert message =~ "bare atoms"
+  end
+
+  test "supports nullary variants declared with the variants shorthand" do
+    assert TicTacToeMark.variant_names() == [:x, :o]
+    assert TicTacToeMark.new(:x) == {:ok, :x}
+    assert TicTacToeMark.cast_input(:o, []) == {:ok, :o}
+    assert TicTacToeMark.dump_to_native(:x, []) == {:ok, %{__variant__: :x}}
   end
 
   test "supports nesting one sum type inside another" do
