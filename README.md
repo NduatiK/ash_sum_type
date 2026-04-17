@@ -4,27 +4,6 @@
 
 It lets you declare tagged variants with optional carried fields, work with them in Elixir as atoms or tuples, and persist them through Ash as maps.
 
-## What It Provides
-
-- A compact DSL for declaring variants
-- Validation of fields through regular Ash types
-- In-memory values represented as atoms or tuples
-- Database/native values represented as maps with a reserved `__variant__` key
-- Support for nesting one sum type inside another
-- Use as a normal Ash attribute type
-
-## Installation
-
-Add the dependency to `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:ash_sum_type, "~> 1.0.0"}
-  ]
-end
-```
-
 ## Defining A Sum Type
 
 ```elixir
@@ -45,6 +24,27 @@ This defines an Ash type with two variants:
 
 - `:ok`, which carries an integer
 - `:error`, which carries a string message
+
+## What It Provides
+
+- A compact DSL for declaring variants
+- Validation of fields through regular Ash types
+- In-memory values represented as atoms or tuples
+- Database/native values represented as maps with a reserved `__variant__` key
+- Support for nesting one sum type inside another
+- Use as a normal Ash attribute type
+
+## Installation
+
+Add the dependency to `mix.exs`:
+
+```elixir
+def deps do
+  [
+    {:ash_sum_type, "~> 1.0.0"}
+  ]
+end
+```
 
 ## Constructing Values
 

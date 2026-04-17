@@ -28,7 +28,7 @@ defmodule AshSumType.MixProject do
     [
       {:usage_rules, "~> 1.0", only: [:dev]},
       {:sourceror, "~> 1.8", only: [:dev, :test]},
-      {:ash, "~> 3.0", only: [:test]}
+      {:ash, "~> 3.0"}
     ]
   end
 
