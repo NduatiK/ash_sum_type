@@ -59,6 +59,16 @@ defmodule AshSumTypeTest do
              {:ok, [{:ok, 1}]}
   end
 
+  test "supports handle_change_array expected by Ash types" do
+    assert Result.handle_change_array?()
+
+    assert Result.handle_change_array([], [%{__variant__: :ok, value: 1}, {:error, "nope"}], []) ==
+             {:ok, [{:ok, 1}, {:error, "nope"}]}
+
+    assert Ash.Type.handle_change({:array, Result}, [], [%{__variant__: :ok, value: 1}], []) ==
+             {:ok, [{:ok, 1}]}
+  end
+
   test "stores values as maps in the database representation" do
     assert {:ok, dumped} = Result.dump_to_native({:ok, 1}, [])
     assert dumped == %{__variant__: :ok, value: 1}
@@ -81,6 +91,13 @@ defmodule AshSumTypeTest do
   test "prepare_change_array propagates item errors" do
     assert {:error, [[value: "nope", field: :value, message: message]]} =
              Result.prepare_change_array([], [%{__variant__: :ok, value: "nope"}], [])
+
+    assert message =~ "is invalid"
+  end
+
+  test "handle_change_array propagates item errors" do
+    assert {:error, [[value: "nope", field: :value, message: message]]} =
+             Result.handle_change_array([], [%{__variant__: :ok, value: "nope"}], [])
 
     assert message =~ "is invalid"
   end

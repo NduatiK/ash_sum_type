@@ -468,7 +468,28 @@ defmodule AshSumType do
         do: cast_input(new_value, constraints)
 
       @impl true
-      def handle_change_array?, do: false
+      def handle_change_array(_old_values, nil, _constraints), do: {:ok, nil}
+
+      def handle_change_array(_old_values, new_values, constraints) when is_list(new_values) do
+        Enum.reduce_while(new_values, {:ok, []}, fn value, {:ok, changed_values} ->
+          case handle_change(nil, value, constraints) do
+            {:ok, changed_value} ->
+              {:cont, {:ok, [changed_value | changed_values]}}
+
+            {:error, error} ->
+              {:halt, {:error, error}}
+          end
+        end)
+        |> case do
+          {:ok, changed_values} -> {:ok, Enum.reverse(changed_values)}
+          {:error, error} -> {:error, error}
+        end
+      end
+
+      def handle_change_array(_old_values, new_values, _constraints), do: {:ok, new_values}
+
+      @impl true
+      def handle_change_array?, do: true
 
       @impl true
       def prepare_change(_old_value, new_value, constraints),
