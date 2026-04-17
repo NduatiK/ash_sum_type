@@ -131,6 +131,16 @@ defmodule MyApp.Game do
     end
   end
 end
+
+defmodule MyApp.Games do
+  use Ash.Domain, validate_config_inclusion?: false
+
+  resources do
+    resource MyApp.Game do
+      define :create_game, action: :create, args: [:winner]
+    end
+  end
+end
 ```
 
 Example usage:
