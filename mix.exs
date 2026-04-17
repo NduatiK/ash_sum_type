@@ -3,7 +3,7 @@ defmodule AshSumType.MixProject do
 
   @app :ash_sum_type
   @description "A DSL for defining custom Ash types that behave like algebraic sum types."
-  @version "1.0.1"
+  @version "1.0.2"
   def project do
     [
       app: @app,
