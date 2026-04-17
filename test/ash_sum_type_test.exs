@@ -102,6 +102,18 @@ defmodule AshSumTypeTest do
     assert message =~ "is invalid"
   end
 
+  test "array items reject nil by default" do
+    assert {:error, _} =
+             Ash.Type.apply_constraints({:array, TicTacToeMark}, [:x, nil, :o], [])
+  end
+
+  test "array items allow nil with nil_items?: true" do
+    assert {:ok, [:x, nil, :o]} =
+             Ash.Type.apply_constraints({:array, TicTacToeMark}, [:x, nil, :o],
+               nil_items?: true
+             )
+  end
+
   test "works as an Ash resource attribute type with default values" do
     game = TestGamesDomain.create_game!({:player, :x})
     assert game.default_winner == :draw
