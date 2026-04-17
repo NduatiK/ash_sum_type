@@ -5,6 +5,10 @@ defmodule AshSumType do
   Each module that `use`s `AshSumType` becomes an Ash type. Values are
   represented in memory as tuples whose first element is the variant tag (must be an atom):
 
+      defmodule DrinkSize do
+        use AshSumType, variants: [:small, :large]
+      end
+
       defmodule Result do
         use AshSumType
 
