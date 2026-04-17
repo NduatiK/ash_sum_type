@@ -13,7 +13,11 @@ defmodule AshSumType do
         use AshSumType
 
         variant :ok do
-          field :value, :integer, allow_nil?: false
+          field :value, :integer
+        end
+
+        variant :error do
+          field :message, :string, allow_nil?: true
         end
       end
 
@@ -26,6 +30,8 @@ defmodule AshSumType do
 
   This library stores sum-type values in the database as maps using the reserved
   `__variant__` key, while exposing atoms/tuples in memory.
+
+  `fields` values are not nullable by default.
   """
 
   defmodule Field do
