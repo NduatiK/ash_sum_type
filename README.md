@@ -4,7 +4,8 @@
 
 It lets you declare tagged variants with optional carried fields, work with them in Elixir as atoms or tuples, and persist them through Ash as maps.
 
-> [!NOTE] Fields are not nilable by default
+> [!NOTE] 
+> Fields are not nilable by default
 
 ## Defining A Sum Type
 
