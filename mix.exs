@@ -44,7 +44,7 @@ defmodule AshSumType.MixProject do
       licenses: ["MIT"],
       files: ~w(lib .formatter.exs mix.exs README*),
       links: %{
-        "GitHub" => "https://github.com/NduatiK/ash_sum_type",
+        "GitHub" => "https://github.com/NduatiK/ash_sum_type"
       }
     ]
   end

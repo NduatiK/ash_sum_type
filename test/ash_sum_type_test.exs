@@ -51,6 +51,11 @@ defmodule AshSumTypeTest do
     assert message =~ "expected 1 argument"
   end
 
+  test "works as an Ash resource attribute type with default values" do
+    game = TestGamesDomain.create_game!({:player, :x})
+    assert game.default_winner == :draw
+  end
+
   test "works as an Ash resource attribute type with the ETS data layer" do
     game = TestGamesDomain.create_game!({:player, :x})
     assert game.winner == {:player, :x}

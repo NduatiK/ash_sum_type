@@ -12,6 +12,7 @@ defmodule AshSumTypeTest.TestGameResource do
   attributes do
     uuid_primary_key :id
     attribute :winner, TicTacToeGameWinner, allow_nil?: false, public?: true
+    attribute :default_winner, TicTacToeGameWinner, default: :draw
   end
 
   actions do

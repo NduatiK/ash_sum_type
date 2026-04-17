@@ -19,6 +19,7 @@ defmodule AshSumType do
       Result.new({:ok, 1})
       # {:ok, {:ok, 1}}
 
+
   This library stores sum-type values in the database as maps using the reserved
   `__variant__` key, while exposing atoms/tuples in memory.
   """
