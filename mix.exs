@@ -3,13 +3,14 @@ defmodule AshSumType.MixProject do
 
   @app :ash_sum_type
   @description "A DSL for defining custom Ash types that behave like algebraic sum types."
-  @version "1.0.2"
+  @version "1.0.3"
   def project do
     [
       app: @app,
       description: @description,
       version: @version,
       package: package(),
+      docs: &docs/0,
       # 
       elixir: "~> 1.19",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -31,9 +32,18 @@ defmodule AshSumType.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:ex_doc, "~> 0.37", only: [:dev, :test], runtime: false},
       {:usage_rules, "~> 1.0", only: [:dev]},
       {:sourceror, "~> 1.8", only: [:dev, :test]},
       {:ash, "~> 3.0"}
+    ]
+  end
+
+  defp docs do
+    [
+      extras: [
+        "README.md"
+      ]
     ]
   end
 
@@ -43,7 +53,7 @@ defmodule AshSumType.MixProject do
         "Nduati Kuria"
       ],
       licenses: ["MIT"],
-      files: ~w(lib .formatter.exs mix.exs README*),
+      files: ~w(lib .formatter.exs mix.exs README* doc),
       links: %{
         "GitHub" => "https://github.com/NduatiK/ash_sum_type"
       }

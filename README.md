@@ -4,14 +4,13 @@
 
 It lets you declare tagged variants with optional carried fields, work with them in Elixir as atoms or tuples, and persist them through Ash as maps.
 
-> [!NOTE] 
-> Fields are not nilable by default
-
 ## Defining A Sum Type
 
 ```elixir
 defmodule MyApp.Result do
   use AshSumType
+
+  variant :loading
 
   variant :ok do
     field :value, :integer
@@ -23,7 +22,19 @@ defmodule MyApp.Result do
 end
 ```
 
-For nullary variants, you can also use a shorthand:
+
+This defines an Ash type with two variants:
+
+- `:loading`, which is a bare atom `:loading`
+- `:ok`, which carries an integer eg `{:ok, 1}`
+- `:error`, which carries a string message `{:error, "Not found"}`
+
+
+> #### Tip {: .tip}
+>
+> Fields are not nilable by default
+
+For enum-like variants, you can also use a shorthand:
 
 ```elixir
 defmodule MyApp.Player do
@@ -31,10 +42,61 @@ defmodule MyApp.Player do
 end
 ```
 
-This defines an Ash type with two variants:
 
-- `:ok`, which carries an integer
-- `:error`, which carries a string message
+## Constructing Values
+
+You can construct values either from a variant name plus named fields, or from an existing atom/tuple representation.
+
+```elixir
+iex> MyApp.Result.new(:ok, value: 1)
+{:ok, {:ok, 1}}
+
+# Or directly with a tuple
+iex> MyApp.Result.new({:error, "not found"})
+{:ok, {:error, "not found"}}
+
+iex> MyApp.Result.new!(:ok, value: 1)
+{:ok, 1}
+
+# Or directly with a tuple
+iex> MyApp.Result.new!({:ok, 1})
+{:ok, 1}
+
+# For atom variants
+iex> MyApp.Result.new!(:loading)
+:loading
+
+iex> MyApp.Player.new(:x)
+{:ok, :x}
+```
+
+
+## Nesting
+
+A field can itself be another `AshSumType` type:
+
+```elixir
+defmodule MyApp.GameWinner do
+  use AshSumType
+
+  variant :player do
+    field :player, MyApp.Player
+  end
+
+  variant :draw
+end
+```
+
+This allows values like:
+
+```
+iex> MyApp.GameWinner.new!(:draw)
+:draw
+
+iex> MyApp.GameWinner.new!({:player, :x})
+{:player, :x}
+```
+
 
 ## What It Provides
 
@@ -57,39 +119,7 @@ def deps do
 end
 ```
 
-## Constructing Values
 
-You can construct values either from a variant name plus named fields, or from an existing atom/tuple representation.
-
-```elixir
-iex> MyApp.Result.new(:ok, value: 1)
-{:ok, {:ok, 1}}
-
-# Or directly with a tuple
-iex> MyApp.Result.new({:error, "not found"})
-{:ok, {:error, "not found"}}
-
-iex> MyApp.Result.new!(:ok, value: 1)
-{:ok, 1}
-
-# Or directly with a tuple
-iex> MyApp.Result.new!({:ok, 1})
-{:ok, 1}
-```
-
-Nullary variants are represented as bare atoms:
-
-```elixir
-defmodule MyApp.Player do
-  use AshSumType
-
-  variant :x
-  variant :o
-end
-
-iex> MyApp.Player.new(:x)
-{:ok, :x}
-```
 
 ## Persistence Format
 
@@ -113,16 +143,6 @@ The `__variant__` key is reserved for the variant tag.
 ## Using It In Ash Resources
 
 ```elixir
-defmodule MyApp.GameWinner do
-  use AshSumType
-
-  variant :player do
-    field :player, MyApp.Player, allow_nil?: false
-  end
-
-  variant :draw
-end
-
 defmodule MyApp.Game do
   use Ash.Resource,
     domain: MyApp.Games,
@@ -185,27 +205,6 @@ end
 
 Unknown variants, unknown carried fields, invalid field values, and wrong tuple arity are rejected.
 
-## Nesting
-
-A field can itself be another `AshSumType` type:
-
-```elixir
-defmodule MyApp.GameWinner do
-  use AshSumType
-
-  variant :player do
-    field :player, MyApp.Player
-  end
-
-  variant :draw
-end
-```
-
-This allows values like:
-
-```elixir
-{:player, :x}
-```
 
 ## API Summary
 
